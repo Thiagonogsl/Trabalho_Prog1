@@ -2,7 +2,7 @@ import random
 import datetime
 
 #Dados escolhdos: Nome(str), Sobrenome(str), Idade(int), Telefone(str), Numero do Quarto(int), diaria_quarto(Float), 
-#Contatos de Emergencia(Lista), data_checkin, data_checkout, pagamento_Confirmado(Bool)
+#data_checkin, data_checkout, pagamento_Confirmado(Bool)
 
 #Gerar Datas de Check-in e check-out
 def gerar_dia_checkin():        
@@ -23,7 +23,7 @@ def gerar_telefone():
     ultimos_numeros = str(ultimos_numeros).zfill(4)
 
     telefone = (f"({ddd}) 9{primeiros_numeros}-{ultimos_numeros}")
-
+    return telefone
 def gerar_numero_quarto():
     andar = random.randint(3, 12)
     andar = str(andar)
@@ -61,26 +61,25 @@ def gerar_idade():
 def gerar_confirmacao_pagamento():
     pagamento = bool(random.randint(0,1))
     return pagamento
+#######################################################################################
 
-print(gerar_confirmacao_pagamento())
+def gerar_arquivo(nome_arquivo, tamanho_arquivo):
+    with open(nome_arquivo, "w", encoding="utf-8")  as arquivo:
+        for _ in range (tamanho_arquivo):
+            nome = gerar_nome()
+            idade = gerar_idade()
+            telefone = gerar_telefone()
+            confirmacao = gerar_confirmacao_pagamento()
+            numero_quarto = gerar_numero_quarto()
+            diaria = gerar_precos()
+            data_checkin = gerar_dia_checkin()
 
-#Formatar as datas
-data_checkin = gerar_dia_checkin()
-dias_estadia = random.randint(1, 15)
-data_checkout = data_checkin + datetime.timedelta(days=dias_estadia)
+            dias_estadia = random.randint(1, 20)
+            data_checkout = data_checkin + datetime.timedelta(days=dias_estadia)
 
-data_checkin = data_checkin.strftime("%d/%m/%Y")
-data_checkout = data_checkout.strftime("%d/%m/%Y")
+            data_checkin = data_checkin.strftime("%d/%m/%Y")
+            data_checkout = data_checkout.strftime("%d/%m/%Y")
 
+            linha = f"{nome};{idade};{telefone};{confirmacao};{numero_quarto};R${diaria};{data_checkin};{data_checkout}\n"
 
-def gerar_telefone():
-    ddd = random.randint(11, 99)
-
-    primeiros_numeros = random.randint(0, 9999)
-    ultimos_numeros = random.randint(0, 9999)
-    
-    primeiros_numeros = str(primeiros_numeros).zfill(4)
-    ultimos_numeros = str(ultimos_numeros).zfill(4)
-
-    telefone = (f"({ddd}) 9{primeiros_numeros}-{ultimos_numeros}")
-    return telefone
+            arquivo.write(linha)
