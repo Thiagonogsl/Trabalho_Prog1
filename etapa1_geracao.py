@@ -86,4 +86,3 @@ def gerar_arquivo(nome_arquivo, tamanho_arquivo):
             linha = f"{nome};{idade};{telefone};{confirmacao};{numero_quarto};[{telefones_formatados}];R${diaria};{data_checkin};{data_checkout}\n"
 
             arquivo.write(linha)
-gerar_arquivo("teste.txt", 5)
