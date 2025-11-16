@@ -22,7 +22,7 @@ def gerar_telefone():
     primeiros_numeros = str(primeiros_numeros).zfill(4)
     ultimos_numeros = str(ultimos_numeros).zfill(4)
 
-    telefone = (f"({ddd}) 9{primeiros_numeros}-{ultimos_numeros}")
+    telefone = (f"({ddd})9{primeiros_numeros}-{ultimos_numeros}")
     return telefone
 def gerar_numero_quarto():
     andar = random.randint(3, 12)
@@ -74,12 +74,16 @@ def gerar_arquivo(nome_arquivo, tamanho_arquivo):
             diaria = gerar_precos()
             data_checkin = gerar_dia_checkin()
 
+            telefones_emergencia = [gerar_telefone(), gerar_telefone()]
+            telefones_formatados = ",".join(telefones_emergencia)
+
             dias_estadia = random.randint(1, 20)
             data_checkout = data_checkin + datetime.timedelta(days=dias_estadia)
 
             data_checkin = data_checkin.strftime("%d/%m/%Y")
             data_checkout = data_checkout.strftime("%d/%m/%Y")
 
-            linha = f"{nome};{idade};{telefone};{confirmacao};{numero_quarto};R${diaria};{data_checkin};{data_checkout}\n"
+            linha = f"{nome};{idade};{telefone};{confirmacao};{numero_quarto};[{telefones_formatados}];R${diaria};{data_checkin};{data_checkout}\n"
 
             arquivo.write(linha)
+gerar_arquivo("teste.txt", 5)

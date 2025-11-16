@@ -30,7 +30,7 @@ def main():
     tempo_execucao = fim - inicio
 
     print(f"Arquivo {nome} gerado com {tamanho} registros")
-    print(f"Tempo de execução = {tempo_execucao}")
+    print(f"Tempo de execução = {tempo_execucao} segundos")
 
 if __name__ == "__main__":
     main()
