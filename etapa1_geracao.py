@@ -1,10 +1,7 @@
 import random
 import datetime
 
-#Dados escolhdos: Nome(str), Sobrenome(str), Idade(int), Telefone(str), Numero do Quarto(int), diaria_quarto(Float), 
-#data_checkin, data_checkout, pagamento_Confirmado(Bool)
-
-#Gerar Datas de Check-in e check-out
+########################################## gerar checkin e checkout ####################################################################
 def gerar_dia_checkin():        
     data_inicial = datetime.date(day=1, month=1, year=2025)
     numero_dias = random.randint(0, 365)
@@ -12,7 +9,7 @@ def gerar_dia_checkin():
     data_checkin = data_inicial + datetime.timedelta(days=numero_dias)
     return data_checkin
 
-#Gerar Numeros de telefone
+########################################## gerar telefone ####################################################################
 def gerar_telefone():
     ddd = random.randint(11, 99)
 
@@ -24,6 +21,8 @@ def gerar_telefone():
 
     telefone = (f"({ddd})9{primeiros_numeros}-{ultimos_numeros}")
     return telefone
+
+########################################## gerar quarto ####################################################################
 def gerar_numero_quarto():
     andar = random.randint(3, 12)
     andar = str(andar)
@@ -34,6 +33,7 @@ def gerar_numero_quarto():
     numero_quarto = andar + numero
     return int(numero_quarto)
 
+########################################## gerar nomes ####################################################################
 def gerar_nome():
     lista_nomes = ["Thiago", "Lucas", "Marcos", "Antônio", "Gabriel", "João Pedro", "Juan", "Davi", "Claudio",\
                 "Igor", "Icaro", "Caio", "Eduardo", "Maria", "Victoria", "Ana", "Claudia", "Nicole", \
@@ -48,21 +48,24 @@ def gerar_nome():
     nome_completo = nome + " " + sobrenome
     return nome_completo
 
+########################################## gerar preços ####################################################################
 def gerar_precos():
     lista_Precos = [199.99, 349.99, 650.00, 1300.00]
     preco = random.choice(lista_Precos)
 
     return preco
 
+########################################## gerar idade ####################################################################
 def gerar_idade():
     idade = random.randint(18, 80)
     return idade
 
+########################################## gerar confirmação ####################################################################
 def gerar_confirmacao_pagamento():
     pagamento = bool(random.randint(0,1))
     return pagamento
-#######################################################################################
 
+########################################## gerar arquivo ####################################################################
 def gerar_arquivo(nome_arquivo, tamanho_arquivo):
     with open(nome_arquivo, "w", encoding="utf-8")  as arquivo:
         for _ in range (tamanho_arquivo):
