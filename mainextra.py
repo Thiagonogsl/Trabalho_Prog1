@@ -1,13 +1,15 @@
 import customtkinter as ctk
 from tkinter import ttk, messagebox
 import datetime
+import os
+from PIL import Image  # Biblioteca para manipular imagens
 
 # Configurações iniciais do CustomTkinter
-ctk.set_appearance_mode("Dark")  # Modos: "System" (padrão), "Dark", "Light"
-ctk.set_default_color_theme("blue")  # Temas: "blue" (padrão), "green", "dark-blue"
+ctk.set_appearance_mode("Dark")
+ctk.set_default_color_theme("dark-blue")
 
 # ==============================================================================
-#  BACKEND (Lógica de Dados - Igual ao anterior)
+#  BACKEND (Lógica de Dados)
 # ==============================================================================
 class Hospede:
     def __init__(self, nome, idade, telefone, pagamento, numero_quarto, contatos_emergencia, valor_diaria, checkin, checkout):
@@ -57,7 +59,7 @@ def salvar_dados(nome_arquivo, lista_hospedes):
         return False
 
 # ==============================================================================
-#  FRONTEND (Interface Moderna)
+#  FRONTEND (Interface Gráfica)
 # ==============================================================================
 class App(ctk.CTk):
     def __init__(self):
@@ -72,8 +74,8 @@ class App(ctk.CTk):
         self.hospedes = carregar_dados(self.arquivo_db)
 
         # Layout: Grid 1 linha x 2 colunas
-        self.grid_columnconfigure(1, weight=1) # A coluna da direita expande
-        self.grid_rowconfigure(0, weight=1)    # A linha expande verticalmente
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_rowconfigure(0, weight=1)
 
         self.criar_sidebar()
         self.criar_area_principal()
@@ -84,10 +86,28 @@ class App(ctk.CTk):
         # Frame Lateral (Esquerda)
         self.sidebar_frame = ctk.CTkFrame(self, width=250, corner_radius=0)
         self.sidebar_frame.grid(row=0, column=0, sticky="nsew")
-        self.sidebar_frame.grid_rowconfigure(8, weight=1) # Empurra coisas para cima
+        self.sidebar_frame.grid_rowconfigure(8, weight=1)
 
-        # Título Lateral
-        self.logo_label = ctk.CTkLabel(self.sidebar_frame, text="Novo Registro", font=ctk.CTkFont(size=20, weight="bold"))
+        # --- LÓGICA DO LOGO ---
+        try:
+            # Pega o caminho exato onde o script está rodando para achar a imagem
+            caminho_script = os.path.dirname(os.path.abspath(__file__))
+            caminho_imagem = os.path.join(caminho_script, "logo.png")
+            
+            imagem_carregada = ctk.CTkImage(
+                light_image=Image.open(caminho_imagem),
+                dark_image=Image.open(caminho_imagem),
+                size=(150, 150) # Tamanho da imagem (Largura, Altura)
+            )
+            # Label COM imagem
+            self.logo_label = ctk.CTkLabel(self.sidebar_frame, text="", image=imagem_carregada)
+            
+        except Exception as e:
+            # Se der erro (arquivo não existe), usa texto simples
+            print(f"Aviso: Imagem não carregada. Erro: {e}")
+            self.logo_label = ctk.CTkLabel(self.sidebar_frame, text="HOTEL UFF", font=ctk.CTkFont(size=20, weight="bold"))
+        # -----------------------
+
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
 
         # Inputs
@@ -102,7 +122,6 @@ class App(ctk.CTk):
 
         self.entry_checkin = ctk.CTkEntry(self.sidebar_frame, placeholder_text="Check-in (DD/MM/AAAA)")
         self.entry_checkin.grid(row=4, column=0, padx=20, pady=10)
-        # Preenche data atual automaticamente
         self.entry_checkin.insert(0, datetime.datetime.now().strftime("%d/%m/%Y"))
 
         self.entry_checkout = ctk.CTkEntry(self.sidebar_frame, placeholder_text="Check-out (DD/MM/AAAA)")
@@ -117,7 +136,7 @@ class App(ctk.CTk):
         self.main_frame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.main_frame.grid(row=0, column=1, sticky="nsew", padx=20, pady=20)
         
-        # Barra de Topo (Busca e Ações)
+        # Barra de Topo
         self.top_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
         self.top_frame.pack(fill="x", pady=(0, 20))
 
@@ -127,21 +146,20 @@ class App(ctk.CTk):
         self.btn_busca = ctk.CTkButton(self.top_frame, text="Buscar", width=100, command=self.buscar)
         self.btn_busca.pack(side="left", padx=5)
 
-        self.btn_limpar = ctk.CTkButton(self.top_frame, text="Limpar Filtro", width=100, fg_color="gray", hover_color="gray30", command=lambda: self.atualizar_tabela())
+        self.btn_limpar = ctk.CTkButton(self.top_frame, text="Limpar", width=80, fg_color="gray", command=lambda: self.atualizar_tabela())
         self.btn_limpar.pack(side="left", padx=5)
         
-        # Botões de Ação Globais
-        self.btn_save = ctk.CTkButton(self.top_frame, text="Salvar em Arquivo", command=self.salvar, fg_color="#1f538d")
+        # Botões de Ação
+        self.btn_save = ctk.CTkButton(self.top_frame, text="Salvar", command=self.salvar, fg_color="#1f538d")
         self.btn_save.pack(side="right", padx=5)
         
-        self.btn_remove = ctk.CTkButton(self.top_frame, text="Remover Selecionado", command=self.remover, fg_color="#b32d2d", hover_color="#802020")
+        self.btn_remove = ctk.CTkButton(self.top_frame, text="Remover", command=self.remover, fg_color="#b32d2d", hover_color="#802020")
         self.btn_remove.pack(side="right", padx=5)
 
-        # Tabela (Treeview dentro de um Frame)
+        # Tabela (Treeview)
         self.tree_frame = ctk.CTkFrame(self.main_frame)
         self.tree_frame.pack(fill="both", expand=True)
 
-        # Scrollbar
         self.tree_scroll = ttk.Scrollbar(self.tree_frame)
         self.tree_scroll.pack(side="right", fill="y")
 
@@ -165,9 +183,8 @@ class App(ctk.CTk):
         self.tree.pack(fill="both", expand=True)
 
     def estilizar_tabela(self):
-        # A Treeview é um elemento do Tkinter clássico, então precisa de estilo específico para ficar "Dark"
         style = ttk.Style()
-        style.theme_use("clam") # 'clam' aceita melhor customizações de cor
+        style.theme_use("clam")
         
         style.configure("Treeview",
                         background="#2b2b2b",
@@ -183,7 +200,6 @@ class App(ctk.CTk):
         
         style.map("Treeview", background=[('selected', '#1f6aa5')])
 
-    # --- Funções Lógicas ---
     def atualizar_tabela(self, lista_filtro=None):
         for item in self.tree.get_children():
             self.tree.delete(item)
@@ -204,7 +220,7 @@ class App(ctk.CTk):
             return
 
         try:
-            # Criação simplificada (assume 0 idade e sem telefone por enquanto na GUI rápida)
+            # Dados simplificados para interface rápida
             novo = Hospede(nome, 0, "N/A", "False", quarto, [], valor, checkin, checkout)
             self.hospedes.append(novo)
             self.atualizar_tabela()
