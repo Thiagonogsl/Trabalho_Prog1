@@ -1,22 +1,23 @@
 import time
 from etapa1_geracao import gerar_arquivo
+from etapa2_leitura import carregar_dados_hotel
 from etapa3_operacoes import menu_interativo
 
 def escolher_arquivo_para_carregar():
     nome = input("Nome do arquivo a carregar: ").strip()
     inicio = time.time()
-    hospedes = ler_arquivo(nome)
+    hospedes = carregar_dados_hotel(nome)
     fim = time.time()
-    print(f"Carregado {len(hospedes)} registros em {fim - inicio:.3f} s")
+    print(f"Carregado {len(hospedes)} registros em {fim - inicio:.4f} s")
     return hospedes
 
 
 def menu_gerar_arquivo():
     print("Escolha o tamanho do arquivo")
-    print("(1) Pequeno (10 hospedes)")
-    print("(2) Médio   (100 hospedes)")
-    print("(3) Grande  (1000 hospedes)")
-    print("(4) Gigante (10000 hospedes)")
+    print("1 - Pequeno (10 hospedes)")
+    print("2 - Médio   (100 hospedes)")
+    print("3 - Grande  (1000 hospedes)")
+    print("4 - Gigante (10000 hospedes)")
     opcao = int(input(">"))
 
     if opcao == 1:
@@ -38,7 +39,7 @@ def menu_gerar_arquivo():
     tempo_execucao = fim - inicio
 
     print(f"Arquivo {nome} gerado com {tamanho} registros")
-    print(f"Tempo de execução = {tempo_execucao} segundos")
+    print(f"Tempo de execução = {tempo_execucao:.4f} segundos")
 
 
 def main():

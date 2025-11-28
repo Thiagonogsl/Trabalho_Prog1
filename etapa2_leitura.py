@@ -1,68 +1,70 @@
 import time
-import ast 
+from typing import List, Optional
 
 class Hospede:
-    def __init__(self, id_hospede, nome, numero_quarto, valor_diaria, lista_extras):
-        self.id_hospede = int(id_hospede)
+    def __init__(self,
+                 nome: str = "",
+                 idade: int = 0,
+                 telefone: str = "",
+                 pagamento: bool = False,
+                 quarto: int = 0,
+                 contatos: Optional[List[str]] = None,
+                 diaria: float = 0.0,
+                 checkin: str = "",
+                 checkout: str = ""):
         self.nome = nome
-        self.numero_quarto = int(numero_quarto)
-        self.valor_diaria = float(valor_diaria)
-        self.lista_extras = lista_extras # é pra colocar uma lista aqui 
+        self.idade = idade
+        self.telefone = telefone
+        self.pagamento = pagamento
+        self.quarto = quarto
+        self.contatos = contatos or []
+        self.diaria = diaria
+        self.checkin = checkin
+        self.checkout = checkout
+
+    @classmethod
+    def ler_linha(cls, linha: str):
+        d = linha.strip().split(";")
+        # Proteção contra linhas mal-formadas:
+        if len(d) < 9:
+            raise ValueError(f"Linha inválida: {linha}")
+
+        nome = d[0]
+        idade = int(d[1]) if d[1] else 0
+        telefone = d[2]
+        pagamento = d[3].strip().lower() in ("true", "1", "s", "sim", "yes")
+        quarto = int(d[4]) if d[4] else 0
+
+        contatos_raw = d[5].strip()
+        contatos = [c.strip() for c in contatos_raw.split(",")] if contatos_raw else []
+
+        diaria_raw = d[6].strip().replace("R$", "").replace(",", ".")
+        diaria = float(diaria_raw) if diaria_raw else 0.0
+
+        checkin = d[7].strip()
+        checkout = d[8].strip()
+
+        return cls(nome, idade, telefone, pagamento, quarto, contatos, diaria, checkin, checkout)
+
+    def escrever_linha(self) -> str:
+        contatos_field = ",".join(self.contatos)
+        return f"{self.nome};{self.idade};{self.telefone};{str(self.pagamento)};{self.quarto};{contatos_field};R${self.diaria:.2f};{self.checkin};{self.checkout}\n"
 
     def __repr__(self):
-        # Apenas para ajudar a ver um print no objeto
-        return f"Hospede {self.nome} (Quarto {self.numero_quarto})"
+        return f"Hospede(nome={self.nome!r}, quarto={self.quarto}, diaria=R${self.diaria:.2f})"
 
-def carregar_dados_hotel(nome_arquivo):
-    lista_hospedes = []
-    
-    try:
-        inicio = time.time()
-        
-        with open(nome_arquivo, 'r', encoding='utf-8') as arquivo:
-            for linha in arquivo:
-                linha = linha.strip()
-                if not linha:
-                    continue 
-                
-                partes = linha.split(',')
-                
-                if len(partes) < 5:
-                    continue
-
-                id_h = partes[0]
-                nome = partes[1]
-                quarto = partes[2]
-                preco = partes[3]
-                
-                extras_str = partes[4] 
-                try:
-                    extras = ast.literal_eval(extras_str)
-                except:
-                    extras = [] 
-
-                novo_hospede = Hospede(id_h, nome, quarto, preco, extras)
-                
-                lista_hospedes.append(novo_hospede)
-        
-        fim = time.time()
-        tempo_total = fim - inicio
-        
-        print(f"Leitura concluída com sucesso!")
-        print(f"Total de registros carregados: {len(lista_hospedes)}")
-        print(f"Tempo de processamento: {tempo_total:.6f} segundos")
-        
-        return lista_hospedes, tempo_total
-
-    except FileNotFoundError:
-        print(f"Erro: O arquivo '{nome_arquivo}' não foi encontrado.")
-        return [], 0
-
-if __name__ == "__main__":
-    dados, tempo = carregar_dados_hotel("dados_hotel.txt")
-    
-    # Ex: Mostrando o primeiro hospede carregado pra analisar
-    if dados:
-        print(f"\nExemplo de dados do primeiro hóspede:")
-        print(vars(dados[0]))
-
+def carregar_dados_hotel(nome_arquivo: str) -> List[Hospede]:
+    inicio = time.time()
+    hospedes = []
+    with open(nome_arquivo, "r", encoding="utf-8") as f:
+        for linha in f:
+            if linha.strip() == "":
+                continue
+            try:
+                h = Hospede.ler_linha(linha)
+                hospedes.append(h)
+            except Exception as e:
+                print(f"Aviso: ignorada linha inválida ({e})")
+    fim = time.time()
+    print(f"Leitura de {nome_arquivo} concluída: {len(hospedes)} registros em {fim - inicio:.4f} s")
+    return hospedes

@@ -1,4 +1,3 @@
-# etapa3_operacoes.py
 import time
 from typing import List, Optional
 from etapa2_leitura import Hospede
@@ -71,7 +70,7 @@ def salvar(hospedes: List[Hospede], nome_arquivo: Optional[str] = None) -> None:
     try:
         with open(nome_arquivo, "w", encoding="utf-8") as f:
             for h in hospedes:
-                f.write(h.to_line())
+                f.write(h.escrever_linha())
         t1 = time.time()
         print(f"Arquivo '{nome_arquivo}' salvo ({len(hospedes)} registros). Tempo: {t1 - t0:.4f} s")
     except Exception as e:
