@@ -77,7 +77,7 @@ def salvar(hospedes: List[Hospede], nome_arquivo: Optional[str] = None) -> None:
     except Exception as e:
         print(f"Erro ao salvar: {e}")
 
-########################################## menu ####################################################################
+########################################## Menu ####################################################################
 
 def menu_interativo(hospedes: List[Hospede]) -> None:
     while True:
@@ -101,4 +101,5 @@ def menu_interativo(hospedes: List[Hospede]) -> None:
             print("Saindo do menu de operações")
             break
         else:
+
             print("Opção inválida.")
