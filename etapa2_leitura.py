@@ -10,7 +10,7 @@ class Hospede:
         self.lista_extras = lista_extras # é pra colocar uma lista aqui 
 
     def __repr__(self):
-        # Apenas para facilitar a visualização se der um print no objeto
+        # Apenas para ajudar a ver um print no objeto
         return f"Hospede {self.nome} (Quarto {self.numero_quarto})"
 
 def carregar_dados_hotel(nome_arquivo):
@@ -65,3 +65,4 @@ if __name__ == "__main__":
     if dados:
         print(f"\nExemplo de dados do primeiro hóspede:")
         print(vars(dados[0]))
+
